@@ -5,6 +5,7 @@ import (
 	"slices"
 
 	"github.com/Faith-Kiv/Ticketing-Backend/models"
+	"github.com/Faith-Kiv/Ticketing-Backend/services"
 	"github.com/gin-gonic/gin"
 )
 
@@ -30,6 +31,11 @@ func CreateTicket(ctx *gin.Context) {
 	isCustomerSupport := slices.Contains(roles, "customer_support")
 	if !isCustomerSupport {
 		ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Forbidden: You do not have permission to create a ticket."})
+		return
+	}
+
+	if !services.ValidatePhoneNumber(ticket.CustomerPhoneNumber) {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid phone number"})
 		return
 	}
 

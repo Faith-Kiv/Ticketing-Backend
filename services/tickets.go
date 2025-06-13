@@ -1,5 +1,13 @@
 package services
 
+import (
+	"fmt"
+
+	"github.com/Faith-Kiv/Ticketing-Backend/utils"
+	"github.com/nyaruka/phonenumbers"
+	"github.com/sirupsen/logrus"
+)
+
 func GetTickets() string {
 	// This function is a placeholder for the ticket service logic.
 	// It can be expanded to include actual service logic as needed.
@@ -40,4 +48,16 @@ func CreateTicketMessage() string {
 	// This function is a placeholder for creating a message associated with a ticket.
 	// It can be expanded to include actual service logic as needed.
 	return "Ticket message created successfully"
+}
+
+func ValidatePhoneNumber(phoneNumber string) bool {
+	// This function is a placeholder for phone number validation logic.
+	// It can be expanded to include actual validation logic as needed.
+	parsed, err := phonenumbers.Parse(phoneNumber, utils.DEFAULT_COUNTRY_CODE)
+	if err != nil || !phonenumbers.IsValidNumber(parsed) {
+		logrus.Error(err)
+		err = fmt.Errorf("invalid phone number %s", phoneNumber)
+		return false
+	}
+	return true
 }
