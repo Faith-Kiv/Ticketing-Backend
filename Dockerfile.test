@@ -1,0 +1,17 @@
+#################################
+# STEP 1 build executable binary
+#################################
+FROM golang:1.24-alpine AS builder
+
+# Install git + SSL ca certificates.
+# Git is required for fetching the dependencies.
+# Ca-certificates is required to call HTTPS endpoints.
+RUN apk update && apk add --no-cache git ca-certificates tzdata && update-ca-certificates
+
+WORKDIR /app/backend
+COPY . /app/backend
+RUN go get -d -v
+EXPOSE 8080
+
+# Fetch dependencies.
+CMD ["go", "run","."]

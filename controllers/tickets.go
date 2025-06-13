@@ -136,20 +136,51 @@ func DeleteTicket(ctx *gin.Context) {
 
 func GetTicketMessages(ctx *gin.Context) {
 	ticketID := ctx.Param("id")
+	messages := []models.TicketMessage{}
+	query := database.DbR
+
 	if ticketID == "" {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Ticket ID is required"})
 		return
 	}
 
-	messages := []models.TicketMessage{}
-
-	// Simulate fetching messages for the ticket from a database or service
-	if err := ctx.ShouldBindQuery(&messages); err != nil {
+	param := map[string][]string{"eq__id": {ticketID}}
+	err := gormabs.SearchMulti(param, query, models.Tickets{}, &messages)
+	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid query parameters"})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, messages)
+	rows, err := gormabs.Count(param, query, models.TicketMessage{})
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "Failed to count tickets"})
+		return
+	}
+
+	ctx.AbortWithStatusJSON(http.StatusOK, gin.H{"count": rows, "messages": messages})
 }
 
-func CreateTicketMessage(ctx *gin.Context) {}
+func CreateTicketMessage(ctx *gin.Context) {
+	ticketID := ctx.Param("id")
+	email := ctx.GetString("email")
+	message := models.TicketMessage{}
+
+	if ticketID == "" {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Ticket ID is required"})
+		return
+	}
+
+	if err := ctx.ShouldBindJSON(&message); err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
+	}
+
+	message.Author = email // Assuming the author is the agent's email
+
+	if err := database.DbR.Table(models.TicketMessage{}.TableName()).Create(&message).Error; err != nil {
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "Failed to save message"})
+		return
+	}
+
+	ctx.AbortWithStatusJSON(http.StatusCreated, message)
+}
