@@ -2,6 +2,7 @@ package services
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/Faith-Kiv/Ticketing-Backend/utils"
 	"github.com/nyaruka/phonenumbers"
@@ -60,4 +61,16 @@ func ValidatePhoneNumber(phoneNumber string) bool {
 		return false
 	}
 	return true
+}
+
+func CalculateSLA(priority string) time.Time {
+	now := time.Now()
+	switch priority {
+	case "high":
+		return now.Add(2 * time.Hour)
+	case "medium":
+		return now.Add(4 * time.Hour)
+	default:
+		return now.Add(12 * time.Hour)
+	}
 }

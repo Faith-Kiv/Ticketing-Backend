@@ -7,6 +7,7 @@ CREATE TABLE tickets (
   content VARCHAR(500) NOT NULL,
   category VARCHAR(50) NOT NULL,  -- 'technical', 'billing', 'general', etc.
   priority VARCHAR(30),           -- 'low', 'medium', 'high'
+  summary TEXT,          -- Summary of the ticket
   status VARCHAR(30) DEFAULT 'OPEN',
   agent_email VARCHAR(100),  -- Email of the agent assigned to the ticket
   agent_name VARCHAR(100),   -- Name of the agent assigned to the ticket
