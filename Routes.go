@@ -1,9 +1,23 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/Faith-Kiv/Ticketing-Backend/controllers"
+	"github.com/gin-gonic/gin"
+)
 
 var Routes = map[string]map[string]gin.HandlerFunc{
-	"/api/v1/ticket/create": {},
-	"/api/v1/ticket/list":   {},
-	"/api/v1/ticket/update": {},
+	"/api/tickets": {
+		"GET":  controllers.GetTickets,
+		"POST": controllers.CreateTicket,
+	},
+
+	"/api/ticket/:id": {
+		"GET": controllers.GetTicket,
+		"PUT": controllers.UpdateTicket,
+	},
+
+	"/api/ticket/:id/messages": {
+		"GET":  controllers.GetTicketMessages,
+		"POST": controllers.CreateTicketMessage,
+	},
 }
