@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/ecoa-dev-team/customer_management/utils"
+	"github.com/Faith-Kiv/Ticketing-Backend/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/sirupsen/logrus"
